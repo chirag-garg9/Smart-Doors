@@ -1,12 +1,10 @@
-FROM  arm64v8/python:3.11.7-bookworm
+FROM  python:3.11.7-bookworm
+
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /backend
 
 # copy from the current directory of the Dockerfile to /backend in the image
-COPY . /backend
+COPY . .
 
-EXPOSE 5000
-
-RUN pip install -r requirements.txt
-
-CMD [ "python", "main.py" ]
+RUN pip install --upgrade pip && pip install -r requirements.txt

@@ -1,0 +1,47 @@
+services:
+  backend:
+    restart: always
+    build: ./backend
+    ports:
+      - "4000:4000"
+    volumes: 
+      - ./backend:/backend
+    command: > 
+      bash -c "pip install -r requirements.txt &&  python main.py"
+
+
+  frontend:
+    restart: always
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - "./frontend:/frontend"
+      - "/frontend/node_modules"
+    command: > 
+      bash -c "cp -rfu /temp/node_modules/. /frontend/node_modules/  
+      && npm run dev"
+    depends_on:
+      - backend
+    environment:
+      - WATCHPACK_POLLING=true
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    command: > 
+      bash -c "mkdir -p ./data/db"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_ROOT_USERNAME:-Smart_door_master}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_ROOT_PASSWORD:-Smart_door_master}"
+    ports:
+      - "27017:27017"
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+    driver: local
