@@ -2,7 +2,6 @@ from ultralytics import YOLO
 import cv2
 from Backend.Number_Plate_Verification.util import *
 import numpy as np
-from threading import Thread
 
 # The NumPlateOperations class performs license plate detection, processing, and number extraction
 # from video frames, and provides a function to verify the number plate.
