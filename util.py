@@ -2,6 +2,7 @@ import torch  # Import PyTorch for deep learning operations
 import torchvision.transforms as transforms  # Import image transformations
 from PIL import Image  # Import Python Imaging Library for image processing
 from facenet_pytorch import MTCNN, InceptionResnetV1  # Import face detection and mode
+# Extracting face from the image.
 def extract_face(path=r"c:\Users\hp\Desktop\phuto.jpg", required_size=(224, 224)):
     """Extracts a single face from a given photograph.
 
@@ -44,6 +45,7 @@ model = InceptionResnetV1(pretrained='vggface2').eval()  # Load pretrained model
 
 # Perform prediction
 with torch.no_grad():  # Disable gradient calculation
+    #get embeddings function.
  def getembeddings(embeddings):
      embeddings = model(face_tensor)  # Generate face embeddings
      return (embeddings)
