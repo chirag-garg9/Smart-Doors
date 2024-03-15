@@ -1,21 +1,19 @@
 from flask import Flask, request
 import cv2
 import numpy as np
-from pymongo import MongoClient
-from Number_Plate_Verification.number_plate_verification import NumPlateOperations
-from gridfs import GridFS
+from Number_Plate_Verification.Number_Plate_Verification import NumPlateOperations
+from Face_Verification.similarity import similarity
 import multiprocessing
+import pickle
 
 proccesser = Flask(__name__)
-
+pre_embedding = []
+Number_plates = pickle.dump()
 class operation():
     def __init__(self):
         self.number_plate_verifier = NumPlateOperations()
-        # self.face_recognizer = FaceRecognizer()
-        # Connect to MongoDB
-        self.client = MongoClient('mongodb://localhost:27017/')
+        self.find_similarity = similarity
         self.m = 0
-
 
 Operatios = operation()
 @proccesser.route("/recieve_data",methods=["Post","Get"])
@@ -35,7 +33,7 @@ def upload():
         pool = multiprocessing.Pool(processes=num_processes)
         
         # Map the methods to the pool
-        results = pool.map(process_method, [(Operatios.number_plate_verifier.verify_number_plate,db,fs), Operatios.face_recognizer])
+        results = pool.map(process_method, [(Operatios.number_plate_verifier.verify_number_plate,Number_plates), (Operatios.find_similarity,pre_embedding)])
         
         # Close the pool
         pool.close()
