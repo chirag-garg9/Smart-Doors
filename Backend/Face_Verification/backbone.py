@@ -1,6 +1,3 @@
-# Original code
-# https://github.com/ZhaoJ9014/face.evoLVe.PyTorch/blob/master/backbone/model_irse.py
-
 from collections import namedtuple
 
 import torch

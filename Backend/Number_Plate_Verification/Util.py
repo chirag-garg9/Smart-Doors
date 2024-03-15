@@ -1,21 +1,8 @@
-import string
 import easyocr
 import random
-from pymongo import MongoClient
 
 # Initialize the OCR reader
 reader = easyocr.Reader(['en'], gpu=False)
-# Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['test_database']
-collection = db['data_lists']
-
-# Code to access all lists
-all_data = collection.find_one()
-
-# accessing verified number plates
-verified_num_plates = all_data['num_plates']
-
 
 #Function to find top k number according to score
 def top_k_scores(num_score, k):
@@ -57,7 +44,7 @@ def top_k_scores(num_score, k):
 
 
 #search function to detect if detected number matches the database or not...
-def search(detected, from_database):
+def search(detected, Number_plates):
     """
     The function "search" checks if there are any common elements between two sets.
     
@@ -72,7 +59,7 @@ def search(detected, from_database):
     for values in detected:
         hashset1.add(values[0])
 
-    for num in from_database:
+    for num in Number_plates:
         hashset2.add(num)
 
     hashset3 = hashset1.intersection(hashset2)

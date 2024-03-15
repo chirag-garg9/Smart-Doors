@@ -3,3 +3,7 @@ opencv-python
 pymongo
 easyocr
 numpy
+Facenet-pytorch
+torchvision
+torch
+numpy

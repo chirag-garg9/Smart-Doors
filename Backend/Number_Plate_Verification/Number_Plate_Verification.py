@@ -1,7 +1,8 @@
 from ultralytics import YOLO
 import cv2
-from Backend.Number_Plate_Verification.util import *
+from Util import *
 import numpy as np
+import os
 
 # The NumPlateOperations class performs license plate detection, processing, and number extraction
 # from video frames, and provides a function to verify the number plate.
@@ -10,7 +11,7 @@ class NumPlateOperations:
         self.license_plate_detector = YOLO('./best.pt')
         self.results = []
 
-    def read_frames(self,db,fs):
+    def read_frames(self,images):
         """
         Read frames from a video capture object, detect license plates,
         and process each license plate to extract the license plate number.
@@ -21,16 +22,9 @@ class NumPlateOperations:
         Returns:
             list: List of results containing license plate numbers and scores.
         """
-        for file_info in db.fs.files.find():
-            image_id = file_info['_id']
-            filename = file_info['filename']
+        for image in os.listdir(images):
             # Retrieve image data from GridFS
-            image_data = fs.get(image_id).read()
-            # Convert image data to numpy array
-            nparr = np.frombuffer(image_data, np.uint8)
-            # Decode image array using OpenCV
-            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            # Detect license plates
+            frame  = cv2.imread(image)
             license_plates = self.license_plate_detector(frame)[0]
             for license_plate in license_plates.boxes.data.tolist():
                 x1, y1, x2, y2, score, class_id = license_plate
@@ -50,14 +44,14 @@ class NumPlateOperations:
 
         return self.results
 
-    def verify_number_plate (self,db,fs):
+    def verify_number_plate (self,images,Number_plates):
         """
         The function "verify_number_plate" reads frames, calculates top k scores, and performs a search
         based on the results.
         :return: the result of the search function.
         """
-        results = self.read_frames(db,fs)
+        results = self.read_frames(images)
         self.results = []
         results = top_k_scores(results)
-        return search(results)
+        return search(results,Number_plates)
                
